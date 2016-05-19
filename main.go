@@ -17,6 +17,7 @@ func main() {
 	}
 	for _, e := range s {
 		list, err := lib.GetSongList(e)
+		// if no error
 		if err == nil {
 			fmt.Println("----" + e)
 			fmt.Println(list)

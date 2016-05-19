@@ -34,11 +34,11 @@ const SearchURL string = "http://api.setlist.fm/rest/0.1/search/artists.json?art
 // get a list of songs and returns a map. The key is the song name and the value is the number of times
 // the song has been played in a concert
 func GetSongList(s string) (map[string]int, error) {
-	var resp Response
 	data, err := performRequest(SearchURL + url.QueryEscape(s))
 	if err != nil {
 		return nil, err
 	}
+	var resp Response
 	json.Unmarshal([]byte(data), &resp)
 	artist, err := getMostSimilarArtist(s, resp.ArtistList.Artist)
 	if err != nil {
@@ -54,6 +54,8 @@ func GetSongList(s string) (map[string]int, error) {
 	return m, nil
 }
 
+// returns a map whose key is the song title and the value is how many times
+// it has been played in the last concerts
 func findSongsInPage(page string) (map[string]int, error) {
 	m := make(map[string]int)
 	doc, err := goquery.NewDocument(page)
