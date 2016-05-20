@@ -16,7 +16,11 @@ func PerformRequest(url string) (string, error) {
 		log.Println(err)
 		return "", err
 	}
-	content, _ := readContent(resp.Body)
+	content, err := readContent(resp.Body)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
 	return string(content), nil
 }
 
