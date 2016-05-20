@@ -1,9 +1,10 @@
-package lib
+package setlist
 
 import (
 	"encoding/json"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/alexrs95/concerto/network"
 	"github.com/antzucaro/matchr"
 	"log"
 	"net/url"
@@ -34,7 +35,7 @@ const SearchURL string = "http://api.setlist.fm/rest/0.1/search/artists.json?art
 // get a list of songs and returns a map. The key is the song name and the value is the number of times
 // the song has been played in a concert
 func GetSongList(s string) (map[string]int, error) {
-	data, err := performRequest(SearchURL + url.QueryEscape(s))
+	data, err := network.PerformRequest(SearchURL + url.QueryEscape(s))
 	if err != nil {
 		return nil, err
 	}
@@ -84,6 +85,9 @@ func getMostSimilarArtist(name string, artists []Artist) (Artist, error) {
 	if err != nil {
 		log.Println(err)
 		return Artist{}, err
+	}
+	if dist[min] > 10 {
+		return Artist{}, errors.New("No artist with similar name")
 	}
 	return artists[min], nil
 }

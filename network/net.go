@@ -1,4 +1,4 @@
-package lib
+package network
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func performRequest(url string) (string, error) {
+func PerformRequest(url string) (string, error) {
 	fmt.Println(url)
 	resp, err := http.Get(url)
 	defer resp.Body.Close()

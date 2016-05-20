@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"github.com/alexrs95/concerto/lib"
+	"github.com/alexrs95/concerto/io"
+	"github.com/alexrs95/concerto/setlist"
 	"log"
 	"os"
 )
@@ -11,30 +11,16 @@ import (
 func main() {
 	filePath := os.Args[1]
 	fmt.Println(filePath)
-	s, err := readLines(filePath)
+	s, err := io.ReadLines(filePath)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 	for _, e := range s {
-		list, err := lib.GetSongList(e)
+		list, err := setlist.GetSongList(e)
 		// if no error
 		if err == nil {
 			fmt.Println("----" + e)
 			fmt.Println(list)
 		}
 	}
-}
-
-func readLines(path string) ([]string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	var lines []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines, scanner.Err()
 }
