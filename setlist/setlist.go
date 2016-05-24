@@ -5,32 +5,12 @@ import (
 	"errors"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/alexrs95/concerto/network"
-	"github.com/antzucaro/matchr"
+	"github.com/alexrs95/concerto/strop"
 	"log"
 	"net/url"
 	"strconv"
 	"strings"
 )
-
-type Artist struct {
-	Mbid      string `json:"@mbid"`
-	Name      string `json:"@name"`
-	ShortName string `json:"@shortName"`
-	Url       string `json:"url"`
-}
-
-type Response struct {
-	ArtistList ArtistList `json:"artists"`
-}
-
-type ArtistList struct {
-	ItemsPerPage string   `json:"@itemsPerPage"`
-	Page         string   `json:"@page"`
-	Total        string   `json:"@total"`
-	Artist       []Artist `json:"artist"`
-}
-
-const SearchURL string = "http://api.setlist.fm/rest/0.1/search/artists.json?artistName="
 
 // get a list of songs and returns a map. The key is the song name and the value is the number of times
 // the song has been played in a concert
@@ -79,9 +59,9 @@ func findSongsInPage(page string) (map[string]int, error) {
 func getMostSimilarArtist(name string, artists []Artist) (Artist, error) {
 	var dist []int
 	for _, e := range artists {
-		dist = append(dist, editDistance(e.Name, name))
+		dist = append(dist, strop.EditDistance(e.Name, name))
 	}
-	min, err := min(dist)
+	min, err := strop.MinIndex(dist)
 	if err != nil {
 		log.Println(err)
 		return Artist{}, err
@@ -90,23 +70,4 @@ func getMostSimilarArtist(name string, artists []Artist) (Artist, error) {
 		return Artist{}, errors.New("No artist with similar name")
 	}
 	return artists[min], nil
-}
-
-func editDistance(s1, s2 string) int {
-	return matchr.Levenshtein(s1, s2)
-}
-
-func min(args []int) (int, error) {
-	if len(args) == 0 {
-		return 0, errors.New("empty list")
-	}
-	min := args[0]
-	minIndex := 0
-	for i, e := range args {
-		if e < min {
-			min = e
-			minIndex = i
-		}
-	}
-	return minIndex, nil
 }

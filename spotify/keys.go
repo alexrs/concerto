@@ -11,7 +11,7 @@ type Keys struct {
 	Secret   string `json:"secret"`
 }
 
-func readKeys() Keys {
+func getSpotifyKeys() Keys {
 	var keys Keys
 	text, err := ioutil.ReadFile("../keys.json")
 	if err != nil {

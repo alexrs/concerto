@@ -2,8 +2,7 @@ package network
 
 import (
 	"fmt"
-	"io"
-	"io/ioutil"
+	"github.com/alexrs95/concerto/io"
 	"log"
 	"net/http"
 )
@@ -16,18 +15,10 @@ func PerformRequest(url string) (string, error) {
 		log.Println(err)
 		return "", err
 	}
-	content, err := readContent(resp.Body)
+	content, err := io.ReadContent(resp.Body)
 	if err != nil {
 		log.Println(err)
 		return "", err
 	}
 	return string(content), nil
-}
-
-func readContent(r io.ReadCloser) ([]byte, error) {
-	content, err := ioutil.ReadAll(r)
-	if err != nil {
-		return nil, err
-	}
-	return content, nil
 }
