@@ -2,12 +2,11 @@ package spotify
 
 import (
 	"errors"
-	"fmt"
 	"github.com/zmb3/spotify"
 	"log"
 )
 
-func searchSong(title string) ([]SimpleTrack, error) {
+func searchSong(title string) ([]spotify.FullTrack, error) {
 	res, err := spotify.Search(title, spotify.SearchTypeTrack)
 	if err != nil {
 		log.Println(err)
@@ -17,5 +16,5 @@ func searchSong(title string) ([]SimpleTrack, error) {
 	if res.Tracks == nil {
 		return nil, errors.New("empty track list")
 	}
-	return res.Tracks, nil
+	return res.Tracks.Tracks, nil
 }

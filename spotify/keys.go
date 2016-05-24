@@ -1,4 +1,4 @@
-package io
+package spotify
 
 import (
 	"encoding/json"
@@ -13,7 +13,7 @@ type Keys struct {
 
 func getSpotifyKeys() Keys {
 	var keys Keys
-	text, err := ioutil.ReadFile("../keys.json")
+	text, err := ioutil.ReadFile("keys.json")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/alexrs95/concerto/io"
 	"github.com/alexrs95/concerto/setlist"
+	"github.com/alexrs95/concerto/spotify"
 	"log"
 	"os"
 )
@@ -15,6 +16,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	spotify.DoAuth()
+
 	for _, e := range s {
 		list, err := setlist.GetSongList(e)
 		// if no error
