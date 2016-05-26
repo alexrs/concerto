@@ -18,4 +18,9 @@ type ArtistList struct {
 	Artist       []Artist `json:"artist"`
 }
 
+type SongStats struct {
+	Count int
+	Name  string
+}
+
 const SearchURL string = "http://api.setlist.fm/rest/0.1/search/artists.json?artistName="

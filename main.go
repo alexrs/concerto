@@ -23,8 +23,11 @@ func main() {
 		list, err := setlist.GetSongList(e)
 		// if no error
 		if err == nil {
-			fmt.Println("----" + e)
-			fmt.Println(list)
+			max := 10
+			if len(list) < max {
+				max = len(list) - 1
+			}
+			spotify.SearchSong(e, list[:max])
 		}
 	}
 }
