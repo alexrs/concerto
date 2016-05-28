@@ -32,9 +32,8 @@ func GetSongList(s string) ([]SongStats, error) {
 	if err != nil {
 		return nil, err
 	}
-	var resp Response
-	json.Unmarshal([]byte(data), &resp)
-	artist, err := getMostSimilarArtist(s, resp.ArtistList.Artist)
+	resp := unmarshalResponse(data)
+	artist, err := getMostSimilarArtist(s, resp)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -46,6 +45,19 @@ func GetSongList(s string) ([]SongStats, error) {
 		return nil, err
 	}
 	return m, nil
+}
+
+func unmarshalResponse(data string) []Artist {
+	// The API returns a list of artist, but when there is only one artist
+	// instead of returning a list of length 1, it returns a JSON Object. (WTF)
+	if strings.Contains(data, `"artist":{"`) {
+		var respObj ResponseObject
+		json.Unmarshal([]byte(data), &respObj)
+		return []Artist{respObj.ArtistObject.Artists}
+	}
+	var respList ResponseList //most common case
+	json.Unmarshal([]byte(data), &respList)
+	return respList.ArtistList.Artists
 }
 
 // returns a map whose key is the song title and the value is how many times
@@ -63,7 +75,7 @@ func findSongsInPage(page string) ([]SongStats, error) {
 		l = append(l, SongStats{count, song})
 	})
 	if len(l) == 0 {
-		return nil, errors.New("empty map - no songs")
+		return nil, errors.New("empty list - no songs")
 	}
 	sort.Sort(ByCount(l))
 	return l, nil

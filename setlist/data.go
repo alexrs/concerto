@@ -7,15 +7,26 @@ type Artist struct {
 	Url       string `json:"url"`
 }
 
-type Response struct {
+type ResponseList struct {
 	ArtistList ArtistList `json:"artists"`
+}
+
+type ResponseObject struct {
+	ArtistObject ArtistObject `json:"artists"`
+}
+
+type ArtistObject struct {
+	ItemsPerPage string `json:"@itemsPerPage"`
+	Page         string `json:"@page"`
+	Total        string `json:"@total"`
+	Artists      Artist `json:"artist"`
 }
 
 type ArtistList struct {
 	ItemsPerPage string   `json:"@itemsPerPage"`
 	Page         string   `json:"@page"`
 	Total        string   `json:"@total"`
-	Artist       []Artist `json:"artist"`
+	Artists      []Artist `json:"artist"`
 }
 
 type SongStats struct {

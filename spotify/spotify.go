@@ -16,7 +16,9 @@ func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack
 		song, err := searchSong(t.Name)
 		if err == nil {
 			for _, s := range song {
-				if containsArtist(artist, s.SimpleTrack.Artists) && isSong(t.Name, s.SimpleTrack.Name) {
+				if !containsTrack(s.SimpleTrack, l) &&
+					containsArtist(artist, s.SimpleTrack.Artists) &&
+					isSong(t.Name, s.SimpleTrack.Name) {
 					l = append(l, s.SimpleTrack)
 					fmt.Println(s.SimpleTrack.ID)
 				}
@@ -24,4 +26,13 @@ func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack
 		}
 	}
 	return l
+}
+
+func containsTrack(track spotify.SimpleTrack, list []spotify.SimpleTrack) bool {
+	for _, v := range list {
+		if v.Name == track.Name {
+			return true
+		}
+	}
+	return false
 }
