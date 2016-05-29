@@ -39,7 +39,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	spotify.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
 }
 
@@ -48,6 +47,5 @@ func convertTracksToID(tracks []sp.SimpleTrack) []sp.ID {
 	for _, e := range tracks {
 		ids = append(ids, e.ID)
 	}
-	fmt.Println(ids)
 	return ids
 }

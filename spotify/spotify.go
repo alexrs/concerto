@@ -12,13 +12,36 @@ func DoAuth() *spotify.Client {
 
 func AddTracksToPlaylist(client *spotify.Client, userID string, playlistID spotify.ID, tracks []spotify.ID) {
 	len := len(tracks)
-	if len > 100 {
-		len = 100
+	log.Println("len:", len)
+	max := 100
+	iter := (len / max)
+	if iter == 0 {
+		addTracks(client, userID, playlistID, tracks, 0, len)
+	} else {
+		start := 0
+		for i := 0; i <= iter; i++ {
+			log.Println("start:", start, "end:", max)
+			addTracks(client, userID, playlistID, tracks, start, max)
+			start += 100
+			len = len - 100
+			log.Println("len:", len)
+			if len < 100 {
+				max += len
+			} else {
+				max += 100
+			}
+		}
 	}
-	_, err := client.AddTracksToPlaylist(userID, playlistID, tracks[:len]...)
+
+}
+
+func addTracks(client *spotify.Client, userID string, playlistID spotify.ID,
+	tracks []spotify.ID, start int, max int) spotify.ID {
+	snapshotID, err := client.AddTracksToPlaylist(userID, playlistID, tracks[start:max]...)
 	if err != nil {
-		log.Println(err)
+		log.Println("Ups:", err, "start:", start, "end:", max, tracks[start:max])
 	}
+	return spotify.ID(snapshotID)
 }
 
 func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack {
