@@ -10,12 +10,14 @@ import (
 const redirectURI = "http://localhost:8080/callback"
 
 var (
-	auth  = spotify.NewAuthenticator(redirectURI, spotify.ScopeUserReadPrivate)
+	auth = spotify.NewAuthenticator(redirectURI, spotify.ScopeUserReadPrivate,
+		spotify.ScopePlaylistReadPrivate, spotify.ScopePlaylistModifyPublic,
+		spotify.ScopePlaylistModifyPrivate, spotify.ScopePlaylistReadCollaborative)
 	ch    = make(chan *spotify.Client)
 	state = "abc123"
 )
 
-func doAuth() {
+func doAuth() *spotify.Client {
 	startServer()
 	setAuthKeys()
 	url := auth.AuthURL(state)
@@ -26,6 +28,7 @@ func doAuth() {
 		log.Fatal(err)
 	}
 	fmt.Println("You are logged in as:", user.ID)
+	return client
 }
 
 func setAuthKeys() {

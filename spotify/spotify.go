@@ -1,13 +1,24 @@
 package spotify
 
 import (
-	"fmt"
 	"github.com/alexrs95/concerto/setlist"
 	"github.com/zmb3/spotify"
+	"log"
 )
 
-func DoAuth() {
-	doAuth()
+func DoAuth() *spotify.Client {
+	return doAuth()
+}
+
+func AddTracksToPlaylist(client *spotify.Client, userID string, playlistID spotify.ID, tracks []spotify.ID) {
+	len := len(tracks)
+	if len > 100 {
+		len = 100
+	}
+	_, err := client.AddTracksToPlaylist(userID, playlistID, tracks[:len]...)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack {
@@ -20,7 +31,6 @@ func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack
 					containsArtist(artist, s.SimpleTrack.Artists) &&
 					isSong(t.Name, s.SimpleTrack.Name) {
 					l = append(l, s.SimpleTrack)
-					fmt.Println(s.SimpleTrack.ID)
 				}
 			}
 		}
