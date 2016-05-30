@@ -12,7 +12,6 @@ func DoAuth() *spotify.Client {
 
 func AddTracksToPlaylist(client *spotify.Client, userID string, playlistID spotify.ID, tracks []spotify.ID) {
 	len := len(tracks)
-	log.Println("len:", len)
 	max := 100
 	iter := (len / max)
 	if iter == 0 {
@@ -20,11 +19,9 @@ func AddTracksToPlaylist(client *spotify.Client, userID string, playlistID spoti
 	} else {
 		start := 0
 		for i := 0; i <= iter; i++ {
-			log.Println("start:", start, "end:", max)
 			addTracks(client, userID, playlistID, tracks, start, max)
 			start += 100
 			len = len - 100
-			log.Println("len:", len)
 			if len < 100 {
 				max += len
 			} else {
