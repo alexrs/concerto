@@ -1,9 +1,10 @@
 package spotify
 
 import (
+	"log"
+
 	"github.com/alexrs95/concerto/setlist"
 	"github.com/zmb3/spotify"
-	"log"
 )
 
 func DoAuth() *spotify.Client {
@@ -41,6 +42,7 @@ func addTracks(client *spotify.Client, userID string, playlistID spotify.ID,
 	return spotify.ID(snapshotID)
 }
 
+// SearchSong returns
 func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack {
 	l := []spotify.SimpleTrack{}
 	for _, t := range titles {
