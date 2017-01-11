@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"os"
+
 	"github.com/zmb3/spotify"
 )
 
@@ -20,7 +22,7 @@ var (
 
 func doAuth() *spotify.Client {
 	startServer()
-	setAuthKeys()
+	auth.SetAuthInfo(os.Getenv("CONCERTO_CLIENT_ID"), os.Getenv("CONCERTO_SECRET"))
 	url := auth.AuthURL(state)
 	fmt.Println("Please, log in into spotify by visiting: ", url)
 	client := <-ch
@@ -32,18 +34,13 @@ func doAuth() *spotify.Client {
 	return client
 }
 
-func setAuthKeys() {
-	keys := getSpotifyKeys()
-	auth.SetAuthInfo(keys.ClientID, keys.Secret)
-}
-
 func startServer() {
-	//start http server
+	//configure http server
 	http.HandleFunc("/callback", completeAuth)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Got request for:", r.URL.String())
 	})
-
+	// start the server in a new goroutine
 	go http.ListenAndServe(":8080", nil)
 }
 

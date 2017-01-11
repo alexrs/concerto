@@ -1,26 +1,29 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"os"
+
 	"github.com/alexrs95/concerto/io"
 	"github.com/alexrs95/concerto/setlist"
 	"github.com/alexrs95/concerto/spotify"
 	sp "github.com/zmb3/spotify"
-	"log"
-	"os"
 )
 
 func main() {
+	if len(os.Args) < 2 {
+		log.Fatal("Missing file")
+	}
+
 	filePath := os.Args[1]
-	fmt.Println(filePath)
-	s, err := io.ReadLines(filePath)
+	groups, err := io.ReadLines(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	client := spotify.DoAuth()
 	tracks := []sp.SimpleTrack{}
-	for _, e := range s {
+	for _, e := range groups {
 		list, err := setlist.GetSongList(e)
 		// if no error
 		if err == nil {
