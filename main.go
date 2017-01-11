@@ -35,7 +35,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	playlist, err := client.CreatePlaylistForUser(user.ID, "Prueba NOS", false)
+	playlist, err := client.CreatePlaylistForUser(user.ID, os.Args[2], false)
 	if err != nil {
 		log.Fatal(err)
 	}

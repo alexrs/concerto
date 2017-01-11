@@ -2,9 +2,10 @@ package spotify
 
 import (
 	"fmt"
-	"github.com/zmb3/spotify"
 	"log"
 	"net/http"
+
+	"github.com/zmb3/spotify"
 )
 
 const redirectURI = "http://localhost:8080/callback"
