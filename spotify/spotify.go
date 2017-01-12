@@ -7,57 +7,65 @@ import (
 	"github.com/zmb3/spotify"
 )
 
+// DoAuth returns a pointer to spotify.Client
 func DoAuth() *spotify.Client {
 	return doAuth()
 }
 
+// AddTracksToPlaylist add a list of tracks to a given playlist
 func AddTracksToPlaylist(client *spotify.Client, userID string, playlistID spotify.ID, tracks []spotify.ID) {
 	len := len(tracks)
+	// the maximum number of songs that can be added at once to a playlist is 100
 	max := 100
+	// compute how many iterations are needed to add the songs
 	iter := (len / max)
-	if iter == 0 {
-		addTracks(client, userID, playlistID, tracks, 0, len)
-	} else {
-		start := 0
-		for i := 0; i <= iter; i++ {
-			addTracks(client, userID, playlistID, tracks, start, max)
-			start += 100
-			len = len - 100
-			if len < 100 {
-				max += len
-			} else {
-				max += 100
-			}
+
+	start := 0
+	end := max
+	if len < max {
+		end = len
+	}
+	for i := 0; i <= iter; i++ {
+		addTracks(client, userID, playlistID, tracks[start:end])
+		// increase the strart index of the first song to add
+		start += max
+		// decreases the len of the list
+		len = len - max
+		// if the new len is smaller than the max number of allowed songs to add, update the value
+		// of end to avoid overflows
+		if len < max {
+			end += len
+		} else {
+			end += max
 		}
 	}
-
 }
 
 func addTracks(client *spotify.Client, userID string, playlistID spotify.ID,
-	tracks []spotify.ID, start int, max int) spotify.ID {
-	snapshotID, err := client.AddTracksToPlaylist(userID, playlistID, tracks[start:max]...)
+	tracks []spotify.ID) spotify.ID {
+	snapshotID, err := client.AddTracksToPlaylist(userID, playlistID, tracks...)
 	if err != nil {
-		log.Println("Ups:", err, "start:", start, "end:", max, tracks[start:max])
+		log.Println("Error adding tracks")
 	}
 	return spotify.ID(snapshotID)
 }
 
 // SearchSong returns
 func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack {
-	l := []spotify.SimpleTrack{}
+	songs := []spotify.SimpleTrack{}
 	for _, t := range titles {
 		song, err := searchSong(t.Name)
 		if err == nil {
 			for _, s := range song {
-				if !containsTrack(s.SimpleTrack, l) &&
+				if !containsTrack(s.SimpleTrack, songs) &&
 					containsArtist(artist, s.SimpleTrack.Artists) &&
 					isSong(t.Name, s.SimpleTrack.Name) {
-					l = append(l, s.SimpleTrack)
+					songs = append(songs, s.SimpleTrack)
 				}
 			}
 		}
 	}
-	return l
+	return songs
 }
 
 func containsTrack(track spotify.SimpleTrack, list []spotify.SimpleTrack) bool {

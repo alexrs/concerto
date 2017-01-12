@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "remotePath": "",
+            "port": 2345,
+            "host": "127.0.0.1",
+            "program": "${workspaceRoot}",
+            "env": {
+                "SPOTIFY_ID":"413df97ae96f49b8817d5322788b24c2",
+                "SPOTIFY_SECRET":"439397f858c84a7ebf95331ff06607d6"
+            },
+            "args": ["groups.txt", "alex"],
+            "showLog": true
+        }
+    ]
+}

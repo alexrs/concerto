@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"os"
-
 	"github.com/zmb3/spotify"
 )
 
@@ -22,13 +20,12 @@ var (
 
 func doAuth() *spotify.Client {
 	startServer()
-	auth.SetAuthInfo(os.Getenv("CONCERTO_CLIENT_ID"), os.Getenv("CONCERTO_SECRET"))
 	url := auth.AuthURL(state)
 	fmt.Println("Please, log in into spotify by visiting: ", url)
 	client := <-ch
 	user, err := client.CurrentUser()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error obtaining current user: %v", err)
 	}
 	fmt.Println("You are logged in as:", user.ID)
 	return client
@@ -57,5 +54,6 @@ func completeAuth(w http.ResponseWriter, r *http.Request) {
 
 	client := auth.NewClient(tok)
 	fmt.Fprintf(w, "Login completed!")
+	// send the client to the channel
 	ch <- &client
 }

@@ -3,16 +3,18 @@ package setlist
 import (
 	"encoding/json"
 	"errors"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/alexrs95/concerto/network"
-	"github.com/alexrs95/concerto/strop"
 	"log"
 	"net/url"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/alexrs95/concerto/network"
+	"github.com/antzucaro/matchr"
 )
 
+// ByCount orders the songs by count
 type ByCount []SongStats
 
 func (s ByCount) Len() int {
@@ -25,8 +27,8 @@ func (s ByCount) Less(i, j int) bool {
 	return s[i].Count > s[j].Count
 }
 
-// get a list of songs and returns a map. The key is the song name and the value is the number of times
-// the song has been played in a concert
+// GetSongList get a list of songs and returns a map. The key is the song name
+// and the value is the number of times the song has been played in a concert
 func GetSongList(s string) ([]SongStats, error) {
 	data, err := network.PerformRequest(SearchURL + url.QueryEscape(s))
 	if err != nil {
@@ -83,17 +85,38 @@ func findSongsInPage(page string) ([]SongStats, error) {
 
 // returns the most similar artist or an error
 func getMostSimilarArtist(name string, artists []Artist) (Artist, error) {
+	// first, we get the list of distances between the given name, and the list
+	// of artists
 	var dist []int
 	for _, e := range artists {
-		dist = append(dist, strop.EditDistance(e.Name, name))
+		dist = append(dist, matchr.Levenshtein(e.Name, name))
 	}
-	min, err := strop.MinIndex(dist)
+	// gen the index of the minimun value (faster than sorting and getting the
+	// first element, this operation is O(n) and sorting is O(nlgn))
+	min, err := MinIndex(dist)
 	if err != nil {
 		log.Println(err)
 		return Artist{}, err
 	}
-	if dist[min] > 10 {
+	// of the distance is greater than some value, no similar artist found
+	if dist[min] > len(name)/5 {
 		return Artist{}, errors.New("No artist with similar name")
 	}
 	return artists[min], nil
+}
+
+// MinIndex returns the index of the smallest element of the list
+func MinIndex(args []int) (int, error) {
+	if len(args) == 0 {
+		return 0, errors.New("empty list")
+	}
+	min := args[0]
+	minIndex := 0
+	for i, e := range args {
+		if e < min {
+			min = e
+			minIndex = i
+		}
+	}
+	return minIndex, nil
 }

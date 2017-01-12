@@ -2,9 +2,10 @@ package spotify
 
 import (
 	"errors"
-	"github.com/alexrs95/concerto/strop"
-	"github.com/zmb3/spotify"
 	"log"
+
+	"github.com/antzucaro/matchr"
+	"github.com/zmb3/spotify"
 )
 
 func searchSong(title string) ([]spotify.FullTrack, error) {
@@ -20,18 +21,31 @@ func searchSong(title string) ([]spotify.FullTrack, error) {
 	return res.Tracks.Tracks, nil
 }
 
+// containsArtist returns true if the edit distance between the artist names is smaller than
+// some threshold
 func containsArtist(name string, artists []spotify.SimpleArtist) bool {
 	for _, v := range artists {
-		if strop.EditDistance(name, v.Name) < 5 {
+		threshold := min(len(name), len(v.Name)) / 5
+		if matchr.Levenshtein(name, v.Name) < threshold {
 			return true
 		}
 	}
 	return false
 }
 
+// isSong returns true if the edit distance between two titles is smaller than
+// some threshold
 func isSong(s1, s2 string) bool {
-	if strop.EditDistance(s1, s2) < 5 {
+	threshold := min(len(s1), len(s2)) / 5
+	if matchr.Levenshtein(s1, s2) < threshold {
 		return true
 	}
 	return false
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
 }
