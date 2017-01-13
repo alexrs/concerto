@@ -41,6 +41,7 @@ func AddTracksToPlaylist(client *spotify.Client, userID string, playlistID spoti
 	}
 }
 
+// addTracks add a list of songs to a paylist
 func addTracks(client *spotify.Client, userID string, playlistID spotify.ID,
 	tracks []spotify.ID) spotify.ID {
 	snapshotID, err := client.AddTracksToPlaylist(userID, playlistID, tracks...)
@@ -68,6 +69,7 @@ func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack
 	return songs
 }
 
+// containsTrack returns true if the list of songs contains a given song
 func containsTrack(track spotify.SimpleTrack, list []spotify.SimpleTrack) bool {
 	for _, v := range list {
 		if v.Name == track.Name {

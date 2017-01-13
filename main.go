@@ -60,7 +60,9 @@ func main() {
 	spotify.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
 }
 
+// returns a list of ids to add the songs to the playlist
 func convertTracksToID(tracks []sp.SimpleTrack) []sp.ID {
+	// Make a slice of len 0 and capacity len(tracks)
 	ids := make([]sp.ID, 0, len(tracks))
 	for _, e := range tracks {
 		ids = append(ids, e.ID)

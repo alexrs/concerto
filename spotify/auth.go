@@ -1,6 +1,7 @@
 package spotify
 
 import (
+	"crypto/md5"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,7 +16,7 @@ var (
 		spotify.ScopePlaylistReadPrivate, spotify.ScopePlaylistModifyPublic,
 		spotify.ScopePlaylistModifyPrivate, spotify.ScopePlaylistReadCollaborative)
 	ch    = make(chan *spotify.Client)
-	state = "abc123"
+	state = fmt.Sprintf("%x", md5.New().Sum(nil))
 )
 
 func doAuth() *spotify.Client {
