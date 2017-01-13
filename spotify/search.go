@@ -16,7 +16,7 @@ func searchSong(title string) ([]spotify.FullTrack, error) {
 	}
 
 	if res.Tracks == nil {
-		return nil, errors.New("empty track list")
+		return nil, errors.New("spotify: empty track list")
 	}
 	return res.Tracks.Tracks, nil
 }

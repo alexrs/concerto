@@ -51,7 +51,7 @@ func addTracks(client *spotify.Client, userID string, playlistID spotify.ID,
 	return spotify.ID(snapshotID)
 }
 
-// SearchSong returns
+// SearchSong returns a list of songs from spotify
 func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack {
 	songs := []spotify.SimpleTrack{}
 	for _, t := range titles {
