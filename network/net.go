@@ -12,11 +12,11 @@ import (
 func PerformRequest(url string) (string, error) {
 	fmt.Println(url)
 	resp, err := http.Get(url)
-	defer resp.Body.Close()
 	if err != nil {
 		log.Println(err)
 		return "", err
 	}
+	defer resp.Body.Close()
 	content, err := io.ReadContent(resp.Body)
 	if err != nil {
 		log.Println(err)

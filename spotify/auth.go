@@ -44,6 +44,8 @@ func startServer() {
 
 func completeAuth(w http.ResponseWriter, r *http.Request) {
 	tok, err := auth.Token(state, r)
+
+	// error handling
 	if err != nil {
 		http.Error(w, "Couldn't get token", http.StatusForbidden)
 		log.Fatal(err)
@@ -53,7 +55,9 @@ func completeAuth(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("State mismatch: %s != %s\n", st, state)
 	}
 
+	// get a new client
 	client := auth.NewClient(tok)
+	// print confirmation message in the browser
 	fmt.Fprintf(w, "Login completed!")
 	// send the client to the channel
 	ch <- &client
