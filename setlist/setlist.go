@@ -40,7 +40,7 @@ func GetSongList(s string) ([]SongStats, error) {
 		log.Println(err)
 		return nil, err
 	}
-	page := strings.Replace(artist.Url, "setlists", "stats", -1)
+	page := strings.Replace(artist.URL, "setlists", "stats", -1)
 	m, err := findSongsInPage(page)
 	if err != nil {
 		log.Println(err)
