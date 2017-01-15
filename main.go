@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/alexrs95/concerto/io"
 	"github.com/alexrs95/concerto/setlist"
 	"github.com/alexrs95/concerto/spotify"
 	sp "github.com/zmb3/spotify"
@@ -22,7 +21,7 @@ func main() {
 	playlistName := os.Args[2]
 
 	// get the group/artist names
-	groups, err := io.ReadLines(filePath)
+	groups, err := readLines(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,8 +60,8 @@ func main() {
 	spotify.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
 }
 
-//ReadLines returns a slice with the lines of a given file
-func ReadLines(path string) ([]string, error) {
+//readLines returns a slice with the lines of a given file
+func readLines(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
