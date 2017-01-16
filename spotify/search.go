@@ -26,7 +26,7 @@ func searchSong(title string) ([]spotify.FullTrack, error) {
 func containsArtist(name string, artists []spotify.SimpleArtist) bool {
 	for _, v := range artists {
 		threshold := min(len(name), len(v.Name)) / 5
-		if matchr.Levenshtein(name, v.Name) < threshold {
+		if isSimilar(name, v.Name, threshold) {
 			return true
 		}
 	}
@@ -37,10 +37,14 @@ func containsArtist(name string, artists []spotify.SimpleArtist) bool {
 // some threshold
 func isSong(s1, s2 string) bool {
 	threshold := min(len(s1), len(s2)) / 5
-	if matchr.Levenshtein(s1, s2) < threshold {
+	if isSimilar(s1, s2, threshold) {
 		return true
 	}
 	return false
+}
+
+func isSimilar(s1, s2 string, threshold int) bool {
+	return matchr.Levenshtein(s1, s2) < threshold
 }
 
 func min(x, y int) int {

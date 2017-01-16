@@ -8,8 +8,8 @@ import (
 	"fmt"
 
 	"github.com/alexrs95/concerto/setlist"
-	"github.com/alexrs95/concerto/spotify"
-	sp "github.com/zmb3/spotify"
+	sp "github.com/alexrs95/concerto/spotify"
+	"github.com/zmb3/spotify"
 )
 
 func main() {
@@ -29,10 +29,10 @@ Run: concerto artistFile playlistName
 	}
 
 	// Authenticate on spotify
-	client := spotify.DoAuth()
+	client := sp.DoAuth()
 
 	// iterate over the list of groups to get the songs
-	tracks := []sp.SimpleTrack{}
+	tracks := []spotify.SimpleTrack{}
 	for _, e := range groups {
 		//TODO - Paralelize this for
 		list, err := setlist.GetSongList(e)
@@ -45,7 +45,7 @@ Run: concerto artistFile playlistName
 			if len(list) < max {
 				max = len(list) - 1
 			}
-			tracks = append(tracks, spotify.SearchSong(e, list[:max])...)
+			tracks = append(tracks, sp.SearchSong(e, list[:max])...)
 		}
 	}
 
@@ -60,7 +60,7 @@ Run: concerto artistFile playlistName
 	}
 
 	// Finally, the songs are added to the playlist
-	spotify.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
+	sp.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
 }
 
 //readLines returns a slice with the lines of a given file
@@ -83,9 +83,9 @@ func readLines(path string) ([]string, error) {
 }
 
 // returns a list of ids to add the songs to the playlist
-func convertTracksToID(tracks []sp.SimpleTrack) []sp.ID {
+func convertTracksToID(tracks []spotify.SimpleTrack) []spotify.ID {
 	// Make a slice of len 0 and capacity len(tracks)
-	ids := make([]sp.ID, 0, len(tracks))
+	ids := make([]spotify.ID, 0, len(tracks))
 	for _, e := range tracks {
 		ids = append(ids, e.ID)
 	}
