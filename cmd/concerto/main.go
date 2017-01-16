@@ -8,8 +8,7 @@ import (
 
 	"fmt"
 
-	"github.com/alexrs95/concerto/pkg/setlist"
-	sp "github.com/alexrs95/concerto/pkg/spotify"
+	"github.com/alexrs95/concerto/pkg/concerto"
 	"github.com/zmb3/spotify"
 )
 
@@ -30,12 +29,16 @@ Run: concerto artistFile playlistName
 	}
 
 	// Authenticate on spotify
-	client := sp.DoAuth()
+	client := concerto.DoAuth()
+	// Now, the user is obtained to create the playlist.
+	user, err := client.CurrentUser()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// iterate over the list of groups to get the songs
 	tracks := []spotify.SimpleTrack{}
 	var wg sync.WaitGroup
-
 	for _, e := range groups {
 		// Increment the WaitGroup counter.
 		wg.Add(1)
@@ -43,22 +46,17 @@ Run: concerto artistFile playlistName
 	}
 	wg.Wait()
 
-	// Now, the user is obtained to create the playlist.
-	user, err := client.CurrentUser()
-	if err != nil {
-		log.Fatal(err)
-	}
 	playlist, err := client.CreatePlaylistForUser(user.ID, playlistName, false)
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Finally, the songs are added to the playlist
-	sp.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
+	concerto.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
 }
 
 func addSongs(s string, tracks *[]spotify.SimpleTrack, wg *sync.WaitGroup) {
 	defer wg.Done()
-	list, err := setlist.GetSongList(s)
+	list, err := concerto.GetSongList(s)
 	// if no error
 	if err == nil {
 		// max number of songs per artist. This will be a parameter in the future
@@ -68,7 +66,7 @@ func addSongs(s string, tracks *[]spotify.SimpleTrack, wg *sync.WaitGroup) {
 		if len(list) < max {
 			max = len(list) - 1
 		}
-		*tracks = append(*tracks, sp.SearchSong(s, list[:max])...)
+		*tracks = append(*tracks, concerto.SearchSong(s, list[:max])...)
 	}
 }
 

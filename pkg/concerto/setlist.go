@@ -1,4 +1,4 @@
-package setlist
+package concerto
 
 import (
 	"encoding/json"
@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/alexrs95/concerto/pkg/network"
 	"github.com/antzucaro/matchr"
 )
 
@@ -30,7 +29,7 @@ func (s ByCount) Less(i, j int) bool {
 // GetSongList get a list of songs and returns a map. The key is the song name
 // and the value is the number of times the song has been played in a concert
 func GetSongList(s string) ([]SongStats, error) {
-	data, err := network.PerformRequest(SearchURL + url.QueryEscape(s))
+	data, err := PerformRequest(SearchURL + url.QueryEscape(s))
 	if err != nil {
 		return nil, err
 	}

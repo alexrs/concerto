@@ -1,4 +1,4 @@
-package setlist
+package concerto
 
 // Artist contains the data of an artist
 type Artist struct {

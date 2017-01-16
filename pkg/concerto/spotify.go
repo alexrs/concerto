@@ -1,9 +1,8 @@
-package spotify
+package concerto
 
 import (
 	"log"
 
-	"github.com/alexrs95/concerto/pkg/setlist"
 	"github.com/zmb3/spotify"
 )
 
@@ -52,7 +51,7 @@ func addTracks(client *spotify.Client, userID string, playlistID spotify.ID,
 }
 
 // SearchSong returns a list of songs from spotify
-func SearchSong(artist string, titles []setlist.SongStats) []spotify.SimpleTrack {
+func SearchSong(artist string, titles []SongStats) []spotify.SimpleTrack {
 	songs := []spotify.SimpleTrack{}
 	for _, t := range titles {
 		song, err := searchSong(t.Name)
