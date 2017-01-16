@@ -8,8 +8,8 @@ import (
 
 	"fmt"
 
-	"github.com/alexrs95/concerto/setlist"
-	sp "github.com/alexrs95/concerto/spotify"
+	"github.com/alexrs95/concerto/pkg/setlist"
+	sp "github.com/alexrs95/concerto/pkg/spotify"
 	"github.com/zmb3/spotify"
 )
 

@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/alexrs95/concerto/network"
+	"github.com/alexrs95/concerto/pkg/network"
 	"github.com/antzucaro/matchr"
 )
 

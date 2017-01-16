@@ -3,7 +3,7 @@ package spotify
 import (
 	"log"
 
-	"github.com/alexrs95/concerto/setlist"
+	"github.com/alexrs95/concerto/pkg/setlist"
 	"github.com/zmb3/spotify"
 )
 
