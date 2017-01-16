@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"sync"
 
 	"fmt"
 
@@ -33,21 +34,14 @@ Run: concerto artistFile playlistName
 
 	// iterate over the list of groups to get the songs
 	tracks := []spotify.SimpleTrack{}
+	var wg sync.WaitGroup
+
 	for _, e := range groups {
-		//TODO - Paralelize this for
-		list, err := setlist.GetSongList(e)
-		// if no error
-		if err == nil {
-			// max number of songs per artist. This will be a parameter in the future
-			max := 10
-			// if the number of songs returned is lower than the max, its value
-			// is updated.
-			if len(list) < max {
-				max = len(list) - 1
-			}
-			tracks = append(tracks, sp.SearchSong(e, list[:max])...)
-		}
+		// Increment the WaitGroup counter.
+		wg.Add(1)
+		go addSongs(e, &tracks, &wg)
 	}
+	wg.Wait()
 
 	// Now, the user is obtained to create the playlist.
 	user, err := client.CurrentUser()
@@ -58,9 +52,24 @@ Run: concerto artistFile playlistName
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	// Finally, the songs are added to the playlist
 	sp.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
+}
+
+func addSongs(s string, tracks *[]spotify.SimpleTrack, wg *sync.WaitGroup) {
+	defer wg.Done()
+	list, err := setlist.GetSongList(s)
+	// if no error
+	if err == nil {
+		// max number of songs per artist. This will be a parameter in the future
+		max := 10
+		// if the number of songs returned is lower than the max, its value
+		// is updated.
+		if len(list) < max {
+			max = len(list) - 1
+		}
+		*tracks = append(*tracks, sp.SearchSong(s, list[:max])...)
+	}
 }
 
 //readLines returns a slice with the lines of a given file
