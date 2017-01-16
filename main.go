@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	"fmt"
+
 	"github.com/alexrs95/concerto/setlist"
 	"github.com/alexrs95/concerto/spotify"
 	sp "github.com/zmb3/spotify"
@@ -13,8 +15,8 @@ import (
 func main() {
 	// check if the program is called with two args
 	if len(os.Args) < 3 {
-		log.Fatal(`Error. Run it:
-			concerto artistFile playlistName
+		log.Fatal(`Error. 
+Run: concerto artistFile playlistName
 		`)
 	}
 	filePath := os.Args[1]
@@ -32,6 +34,7 @@ func main() {
 	// iterate over the list of groups to get the songs
 	tracks := []sp.SimpleTrack{}
 	for _, e := range groups {
+		//TODO - Paralelize this for
 		list, err := setlist.GetSongList(e)
 		// if no error
 		if err == nil {
@@ -71,6 +74,10 @@ func readLines(path string) ([]string, error) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
+	}
+
+	if len(lines) == 0 {
+		return nil, fmt.Errorf("Empty file")
 	}
 	return lines, scanner.Err()
 }
