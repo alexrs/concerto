@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/zmb3/spotify"
+	"github.com/alexrs95/spotify"
 )
 
 const redirectURI = "http://localhost:8080/callback"

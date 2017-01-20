@@ -3,7 +3,7 @@ package concerto
 import (
 	"log"
 
-	"github.com/zmb3/spotify"
+	"github.com/alexrs95/spotify"
 )
 
 // DoAuth returns a pointer to spotify.Client

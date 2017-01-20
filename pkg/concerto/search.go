@@ -4,8 +4,8 @@ import (
 	"errors"
 	"log"
 
+	"github.com/alexrs95/spotify"
 	"github.com/antzucaro/matchr"
-	"github.com/zmb3/spotify"
 )
 
 func searchSong(title string) ([]spotify.FullTrack, error) {
