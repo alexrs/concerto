@@ -6,7 +6,7 @@ This songs are obtained from [setlist.fm](http://setlist.fm)
 
 ## Install
 ```BASH
-go get github.com/alexrs95/concerto/cmd/concerto
+go get -u github.com/alexrs95/concerto/cmd/concerto
 ```
 
 ## Execute
