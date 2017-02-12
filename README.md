@@ -1,6 +1,6 @@
 # Concerto
 Concerto is a command line tool that creates a playlist in Spotify with the top songs
-artists use to play in concerts.
+artists usually plays in concerts.
 
 This songs are obtained from [setlist.fm](http://setlist.fm)
 

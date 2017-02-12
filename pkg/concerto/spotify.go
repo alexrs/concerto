@@ -24,6 +24,7 @@ func AddTracksToPlaylist(client *spotify.Client, userID string, playlistID spoti
 	if len < max {
 		end = len
 	}
+
 	for i := 0; i <= iter; i++ {
 		addTracks(client, userID, playlistID, tracks[start:end])
 		// increase the strart index of the first song to add
@@ -40,23 +41,27 @@ func AddTracksToPlaylist(client *spotify.Client, userID string, playlistID spoti
 	}
 }
 
-// addTracks add a list of songs to a paylist
-func addTracks(client *spotify.Client, userID string, playlistID spotify.ID,
-	tracks []spotify.ID) spotify.ID {
-	snapshotID, err := client.AddTracksToPlaylist(userID, playlistID, tracks...)
-	if err != nil {
-		log.Println("Error adding tracks")
+// ConvertTracksToID returns a list of ids given a list of tracks
+func ConvertTracksToID(tracks []spotify.SimpleTrack) []spotify.ID {
+	// make a slice of len 0 and capacity len(tracks)
+	ids := make([]spotify.ID, 0, len(tracks))
+	for _, e := range tracks {
+		ids = append(ids, e.ID)
 	}
-	return spotify.ID(snapshotID)
+	return ids
 }
 
 // SearchSong returns a list of songs from spotify
 func SearchSong(artist string, titles []SongStats) []spotify.SimpleTrack {
 	songs := []spotify.SimpleTrack{}
 	for _, t := range titles {
+		// search the song on Spotify
 		song, err := searchSong(t.Name)
 		if err == nil {
+			// iterate over the list of songs
 			for _, s := range song {
+				// check if the song is already included in the list of songs,
+				// the name of the artist coincides and the name of the song coincides
 				if !containsTrack(s.SimpleTrack, songs) &&
 					containsArtist(artist, s.SimpleTrack.Artists) &&
 					isSong(t.Name, s.SimpleTrack.Name) {
@@ -66,6 +71,16 @@ func SearchSong(artist string, titles []SongStats) []spotify.SimpleTrack {
 		}
 	}
 	return songs
+}
+
+// addTracks add a list of songs to a paylist
+func addTracks(client *spotify.Client, userID string, playlistID spotify.ID,
+	tracks []spotify.ID) spotify.ID {
+	snapshotID, err := client.AddTracksToPlaylist(userID, playlistID, tracks...)
+	if err != nil {
+		log.Println("Error adding tracks")
+	}
+	return spotify.ID(snapshotID)
 }
 
 // containsTrack returns true if the list of songs contains a given song

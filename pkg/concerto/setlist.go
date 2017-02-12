@@ -50,7 +50,7 @@ func GetSongList(s string) ([]SongStats, error) {
 
 func unmarshalResponse(data string) []Artist {
 	// The API returns a list of artist, but when there is only one artist
-	// instead of returning a list of length 1, it returns a JSON Object. (WTF)
+	// instead of returning a list of length 1, it returns a JSON Object.
 	if strings.Contains(data, `"artist":{"`) {
 		var respObj ResponseObject
 		json.Unmarshal([]byte(data), &respObj)

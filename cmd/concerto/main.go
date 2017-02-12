@@ -51,7 +51,7 @@ Run: concerto artistFile playlistName
 		log.Fatal(err)
 	}
 	// Finally, the songs are added to the playlist
-	concerto.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, convertTracksToID(tracks))
+	concerto.AddTracksToPlaylist(client, user.ID, playlist.SimplePlaylist.ID, concerto.ConvertTracksToID(tracks))
 }
 
 func addSongs(s string, tracks *[]spotify.SimpleTrack, wg *sync.WaitGroup) {
@@ -87,14 +87,4 @@ func readLines(path string) ([]string, error) {
 		return nil, fmt.Errorf("Empty file")
 	}
 	return lines, scanner.Err()
-}
-
-// returns a list of ids to add the songs to the playlist
-func convertTracksToID(tracks []spotify.SimpleTrack) []spotify.ID {
-	// Make a slice of len 0 and capacity len(tracks)
-	ids := make([]spotify.ID, 0, len(tracks))
-	for _, e := range tracks {
-		ids = append(ids, e.ID)
-	}
-	return ids
 }
